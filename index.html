@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI商业内容自动化生产系统 | Case Study</title>
+  <meta name="description" content="独立设计与开发的 AI 商业内容自动化生产系统。从商品需求到 DeepSeek 分析、视觉策略、ComfyUI 批量生产与 AI 复盘的完整闭环。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0b0d10;
+      --surface: #14181f;
+      --surface-2: #1c222c;
+      --border: #2a3340;
+      --text: #e8ecf1;
+      --text-muted: #9aa6b5;
+      --accent: #6ee7b7;
+      --accent-2: #5b8def;
+      --accent-soft: rgba(110, 231, 183, 0.12);
+      --radius: 14px;
+      --max: 1100px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Noto Sans SC", "Inter", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container {
+      width: min(100% - 2rem, var(--max));
+      margin-inline: auto;
+    }
+
+    /* Hero */
+    .hero {
+      padding: 4.5rem 0 3.5rem;
+      border-bottom: 1px solid var(--border);
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(91, 141, 239, 0.18), transparent),
+        radial-gradient(ellipse 60% 40% at 90% 10%, rgba(110, 231, 183, 0.08), transparent);
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.85rem, 4.5vw, 2.75rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      margin-bottom: 0.6rem;
+    }
+
+    .hero .subtitle {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+      font-weight: 400;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.25rem 2rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .hero-meta strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin-top: 2.5rem;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.1rem;
+      text-align: center;
+    }
+
+    .stat-card .num {
+      font-size: 1.85rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+    }
+
+    .stat-card .label {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 0.35rem;
+    }
+
+    /* Sections */
+    section {
+      padding: 3.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    section:last-of-type { border-bottom: none; }
+
+    .section-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      margin-bottom: 0.6rem;
+    }
+
+    h2 {
+      font-size: clamp(1.4rem, 3vw, 1.85rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.25rem;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+    }
+
+    p { color: var(--text-muted); margin-bottom: 1rem; }
+    p:last-child { margin-bottom: 0; }
+
+    .lead {
+      font-size: 1.08rem;
+      color: var(--text);
+      max-width: 52rem;
+    }
+
+    /* Architecture */
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 0.35rem;
+      margin-top: 1.5rem;
+    }
+
+    .flow-step {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.65rem 1rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .flow-arrow {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      opacity: 0.6;
+    }
+
+    /* Cards */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.35rem 1.4rem;
+    }
+
+    .card h3 { color: var(--text); margin-bottom: 0.5rem; }
+    .card p { font-size: 0.95rem; }
+
+    /* Direction gallery */
+    .direction {
+      margin-top: 2.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .direction:first-of-type {
+      margin-top: 1.75rem;
+      padding-top: 0;
+      border-top: none;
+    }
+
+    .direction-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.5rem 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .direction-header h3 {
+      margin-bottom: 0;
+      font-size: 1.2rem;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 0.2rem 0.65rem;
+      border-radius: 6px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .direction-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.1rem;
+      max-width: 48rem;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+    }
+
+    @media (max-width: 800px) {
+      .gallery { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .gallery a {
+      display: block;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      aspect-ratio: 4/5;
+      transition: transform 0.2s ease, border-color 0.2s;
+    }
+
+    .gallery a:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+      text-decoration: none;
+    }
+
+    .gallery img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Review */
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    .review-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.35rem;
+    }
+
+    .review-card h3 {
+      font-size: 0.95rem;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .review-card ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .review-card li {
+      position: relative;
+      padding-left: 1.1rem;
+      margin-bottom: 0.55rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .review-card li::before {
+      content: "·";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* Tech stack */
+    .tech {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 1.25rem;
+    }
+
+    .tech span {
+      padding: 0.4rem 0.9rem;
+      border-radius: 999px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+
+    /* Footer */
+    footer {
+      padding: 2.5rem 0 3rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      border-top: 1px solid var(--border);
+    }
+
+    footer strong { color: var(--text); }
+
+    /* Lightbox */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      cursor: zoom-out;
+    }
+
+    .lightbox.active { display: flex; }
+
+    .lightbox img {
+      max-width: min(90vw, 900px);
+      max-height: 90vh;
+      border-radius: 8px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    /* Nav */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11, 13, 16, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 0;
+      gap: 1rem;
+    }
+
+    .nav-logo {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 1.1rem;
+      font-size: 0.88rem;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .hero { padding: 3rem 0 2.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="container nav-inner">
+      <div class="nav-logo">AI Content System · Case Study</div>
+      <div class="nav-links">
+        <a href="#overview">概览</a>
+        <a href="#architecture">架构</a>
+        <a href="#analysis">商业分析</a>
+        <a href="#directions">视觉方向</a>
+        <a href="#results">生产成果</a>
+        <a href="#review">AI 复盘</a>
+        <a href="#tech">技术栈</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container">
+      <div class="hero-badge">独立设计与开发 · 真实生产运行</div>
+      <h1>AI 商业内容自动化生产系统</h1>
+      <p class="subtitle">AI Commercial Content Automation System</p>
+      <div class="hero-meta">
+        <span>项目：<strong>MORI LAB 夜间修护精华</strong></span>
+        <span>平台：<strong>小红书种草</strong></span>
+        <span>运行：<strong>2026-09-15</strong></span>
+      </div>
+      <div class="stats">
+        <div class="stat-card">
+          <div class="num">5</div>
+          <div class="label">视觉方向</div>
+        </div>
+        <div class="stat-card">
+          <div class="num">20</div>
+          <div class="label">生产任务</div>
+        </div>
+        <div class="stat-card">
+          <div class="num">100%</div>
+          <div class="label">生成成功率</div>
+        </div>
+        <div class="stat-card">
+          <div class="num">9.8</div>
+          <div class="label">分钟完成</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 01 Overview -->
+    <section id="overview">
+      <div class="container">
+        <div class="section-label">01 · 项目概览</div>
+        <h2>为什么做这个系统？</h2>
+        <p class="lead">
+          传统商业内容生产依赖人工策划、多次沟通与重复执行，周期长、成本高、难以规模化。
+          本系统将「商品需求 → 商业分析 → 视觉策略 → Prompt 编排 → 批量出图 → 文案生成 → AI 复盘」整条链路自动化，
+          在约 10 分钟内完成 5 个方向、20 张商业视觉与种草内容的完整生产，并输出可复盘的结构化数据。
+        </p>
+        <div class="grid-2" style="margin-top: 2rem;">
+          <div class="card">
+            <h3>解决的问题</h3>
+            <p>商业视觉与种草内容生产链路长、依赖人工、难以快速迭代；缺少从策略到执行再到复盘的闭环。</p>
+          </div>
+          <div class="card">
+            <h3>系统价值</h3>
+            <p>端到端 AI 自动化 + 可复现工作流 + 结构化复盘，适合新品上市、多 SKU 内容资产快速建设。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 Architecture -->
+    <section id="architecture">
+      <div class="container">
+        <div class="section-label">02 · 系统架构</div>
+        <h2>从需求到复盘的完整链路</h2>
+        <p class="lead">系统以 Python 编排为核心，串联 DeepSeek 商业分析与视觉策略生成，驱动 ComfyUI 批量生产，并自动归档与 AI 复盘。</p>
+        <div class="flow">
+          <div class="flow-step">商品需求</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">DeepSeek 商业分析</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">视觉策略生成</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Python 任务编排</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">ComfyUI 批量生产</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">自动归档</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">AI 生产复盘</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 Business Analysis -->
+    <section id="analysis">
+      <div class="container">
+        <div class="section-label">03 · AI 商业分析</div>
+        <h2>真实 MORI LAB 项目分析结果</h2>
+        <p class="lead">DeepSeek 根据商品信息自动输出业务目标、用户画像、产品定位、卖点、内容策略与视觉关键词，作为后续策略与生产的基础。</p>
+        <div class="grid-2">
+          <div class="card">
+            <h3>业务目标</h3>
+            <p>为 MORI LAB 夜间修护精华新品上市建立小红书内容资产，完成 5 方向共 20 张商业视觉与种草内容，强化高级极简东方美学认知，提升目标用户对四大卖点的理解与购买兴趣。</p>
+          </div>
+          <div class="card">
+            <h3>目标用户</h3>
+            <p>22–35 岁年轻女性，关注护肤功效与肤感，活跃于小红书，偏好高级、极简、东方美学与自然商业表达，希望睡前护肤兼具功效与仪式感。</p>
+          </div>
+          <div class="card">
+            <h3>产品定位</h3>
+            <p>面向年轻女性的夜间修护型护肤精华，以高级极简东方美学为视觉差异，聚焦夜间修护与深层保湿，兼顾舒缓肌肤与改善肤质。</p>
+          </div>
+          <div class="card">
+            <h3>核心卖点</h3>
+            <p>夜间修护 · 深层保湿 · 改善肤质 · 舒缓肌肤</p>
+          </div>
+        </div>
+        <div class="card" style="margin-top: 1.25rem;">
+          <h3>视觉策略关键词</h3>
+          <p>高级极简 · 东方美学 · 自然温润 · 夜间静谧 · 水润光泽 · 克制留白</p>
+          <p style="margin-top: 0.75rem;">色调：墨黑与深靛蓝、米白与象牙白、雾灰与低饱和茶褐、苔藓绿与自然植物色。灯光：柔和侧逆光 + 轮廓光，模拟月光或床头灯，低对比柔阴影。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 Directions + Results -->
+    <section id="directions">
+      <div class="container">
+        <div class="section-label">04 · 视觉方向 & 实际生产成果</div>
+        <h2>5 个方向 · 20 张真实生成图</h2>
+        <p class="lead">以下为本次运行实际产出的全部图片（已压缩优化，点击可放大查看）。每方向 4 张，覆盖主视觉、产品特写、场景氛围与社交封面。</p>
+
+        <!-- Direction 1 -->
+        <div class="direction" id="results">
+          <div class="direction-header">
+            <h3>01 · 月影修护主视觉</h3>
+            <span class="tag">品牌主 KV · 新品认知</span>
+          </div>
+          <p class="direction-desc">以月光、窗影、深靛夜色与东方极简留白，建立高级、静谧、安心的品牌印象，让产品成为夜间修护仪式的视觉中心。</p>
+          <div class="gallery">
+            <a href="assets/images/01_月影修护主视觉/01.jpg" class="lb"><img src="assets/images/01_月影修护主视觉/01.jpg" alt="月影修护主视觉 1" loading="lazy" /></a>
+            <a href="assets/images/01_月影修护主视觉/02.jpg" class="lb"><img src="assets/images/01_月影修护主视觉/02.jpg" alt="月影修护主视觉 2" loading="lazy" /></a>
+            <a href="assets/images/01_月影修护主视觉/03.jpg" class="lb"><img src="assets/images/01_月影修护主视觉/03.jpg" alt="月影修护主视觉 3" loading="lazy" /></a>
+            <a href="assets/images/01_月影修护主视觉/04.jpg" class="lb"><img src="assets/images/01_月影修护主视觉/04.jpg" alt="月影修护主视觉 4" loading="lazy" /></a>
+          </div>
+        </div>
+
+        <!-- Direction 2 -->
+        <div class="direction">
+          <div class="direction-header">
+            <h3>02 · 水润凝露微距</h3>
+            <span class="tag">质地可视化 · 深层保湿</span>
+          </div>
+          <p class="direction-desc">通过微距放大精华凝露、水滴与玻璃滴管的光泽，把深层保湿与肤感体验转化为可见的水润质感，增强真实感与购买欲。</p>
+          <div class="gallery">
+            <a href="assets/images/02_水润凝露微距/01.jpg" class="lb"><img src="assets/images/02_水润凝露微距/01.jpg" alt="水润凝露微距 1" loading="lazy" /></a>
+            <a href="assets/images/02_水润凝露微距/02.jpg" class="lb"><img src="assets/images/02_水润凝露微距/02.jpg" alt="水润凝露微距 2" loading="lazy" /></a>
+            <a href="assets/images/02_水润凝露微距/03.jpg" class="lb"><img src="assets/images/02_水润凝露微距/03.jpg" alt="水润凝露微距 3" loading="lazy" /></a>
+            <a href="assets/images/02_水润凝露微距/04.jpg" class="lb"><img src="assets/images/02_水润凝露微距/04.jpg" alt="水润凝露微距 4" loading="lazy" /></a>
+          </div>
+        </div>
+
+        <!-- Direction 3 -->
+        <div class="direction">
+          <div class="direction-header">
+            <h3>03 · 睡前仪式场景</h3>
+            <span class="tag">生活化种草 · 情绪价值</span>
+          </div>
+          <p class="direction-desc">以真实睡前场景和女性使用动作，将夜间修护、舒缓与保湿融入生活化仪式，降低广告距离感，增强小红书种草可信度。</p>
+          <div class="gallery">
+            <a href="assets/images/03_睡前仪式场景/01.jpg" class="lb"><img src="assets/images/03_睡前仪式场景/01.jpg" alt="睡前仪式场景 1" loading="lazy" /></a>
+            <a href="assets/images/03_睡前仪式场景/02.jpg" class="lb"><img src="assets/images/03_睡前仪式场景/02.jpg" alt="睡前仪式场景 2" loading="lazy" /></a>
+            <a href="assets/images/03_睡前仪式场景/03.jpg" class="lb"><img src="assets/images/03_睡前仪式场景/03.jpg" alt="睡前仪式场景 3" loading="lazy" /></a>
+            <a href="assets/images/03_睡前仪式场景/04.jpg" class="lb"><img src="assets/images/03_睡前仪式场景/04.jpg" alt="睡前仪式场景 4" loading="lazy" /></a>
+          </div>
+        </div>
+
+        <!-- Direction 4 -->
+        <div class="direction">
+          <div class="direction-header">
+            <h3>04 · 东方草木疗愈</h3>
+            <span class="tag">自然舒缓 · 东方美学</span>
+          </div>
+          <p class="direction-desc">用苔藓绿、茶褐、陶器、植物枝影与侘寂留白，把舒缓肌肤与自然温润的品牌气质转化为安静疗愈的东方静物画面。</p>
+          <div class="gallery">
+            <a href="assets/images/04_东方草木疗愈/01.jpg" class="lb"><img src="assets/images/04_东方草木疗愈/01.jpg" alt="东方草木疗愈 1" loading="lazy" /></a>
+            <a href="assets/images/04_东方草木疗愈/02.jpg" class="lb"><img src="assets/images/04_东方草木疗愈/02.jpg" alt="东方草木疗愈 2" loading="lazy" /></a>
+            <a href="assets/images/04_东方草木疗愈/03.jpg" class="lb"><img src="assets/images/04_东方草木疗愈/03.jpg" alt="东方草木疗愈 3" loading="lazy" /></a>
+            <a href="assets/images/04_东方草木疗愈/04.jpg" class="lb"><img src="assets/images/04_东方草木疗愈/04.jpg" alt="东方草木疗愈 4" loading="lazy" /></a>
+          </div>
+        </div>
+
+        <!-- Direction 5 -->
+        <div class="direction">
+          <div class="direction-header">
+            <h3>05 · 小红书封面留白</h3>
+            <span class="tag">封面点击 · 卖点承载</span>
+          </div>
+          <p class="direction-desc">以干净高调、中心产品、几何留白和信息块预留空间，制作适合小红书封面的商业视觉，便于后续叠加卖点文字。</p>
+          <div class="gallery">
+            <a href="assets/images/05_小红书封面留白/01.jpg" class="lb"><img src="assets/images/05_小红书封面留白/01.jpg" alt="小红书封面留白 1" loading="lazy" /></a>
+            <a href="assets/images/05_小红书封面留白/02.jpg" class="lb"><img src="assets/images/05_小红书封面留白/02.jpg" alt="小红书封面留白 2" loading="lazy" /></a>
+            <a href="assets/images/05_小红书封面留白/03.jpg" class="lb"><img src="assets/images/05_小红书封面留白/03.jpg" alt="小红书封面留白 3" loading="lazy" /></a>
+            <a href="assets/images/05_小红书封面留白/04.jpg" class="lb"><img src="assets/images/05_小红书封面留白/04.jpg" alt="小红书封面留白 4" loading="lazy" /></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 AI Review -->
+    <section id="review">
+      <div class="container">
+        <div class="section-label">05 · AI 生产复盘</div>
+        <h2>真实 production_review 输出</h2>
+        <p class="lead">系统在生产结束后自动生成结构化复盘，覆盖整体评估、关键成果、流程优势、问题识别、优化建议与下一轮迭代计划。</p>
+
+        <div class="card" style="margin-top: 1.5rem; margin-bottom: 1.5rem;">
+          <h3>项目整体评估</h3>
+          <p>本次任务按计划完成 5 个视觉方向、20 个 Prompt 和 20 张图片的生产，图片成功率 100%，营销文案生成成功，总耗时约 9.8 分钟。流程覆盖商品需求、AI 商业分析、视觉策略、内容类型与卖点映射，整体完成度高。</p>
+        </div>
+
+        <div class="review-grid">
+          <div class="review-card">
+            <h3>✓ 关键成果</h3>
+            <ul>
+              <li>5 方向 · 20 Prompt · 20 张图全部成功，成功率 100%</li>
+              <li>营销文案（小红书种草）生成成功</li>
+              <li>形成从需求到复盘的完整生产链路，约 9.8 分钟跑通</li>
+            </ul>
+          </div>
+          <div class="review-card">
+            <h3>★ 流程优势</h3>
+            <ul>
+              <li>任务拆解清晰：5 方向 × 4 张，目标规模明确</li>
+              <li>策略完整性好：业务目标、用户、卖点、视觉策略齐全</li>
+              <li>生产执行稳定：无跳过、无失败</li>
+            </ul>
+          </div>
+          <div class="review-card">
+            <h3>! 问题识别</h3>
+            <ul>
+              <li>缺少方向级 / Prompt 级质量与耗时明细</li>
+              <li>文案仅布尔成功，缺少结构化质量检查</li>
+              <li>尚未接入投放后效果数据闭环</li>
+            </ul>
+          </div>
+          <div class="review-card">
+            <h3>→ 优化建议</h3>
+            <ul>
+              <li>增加方向 / Prompt / 图片级埋点与验收</li>
+              <li>为文案增加卖点覆盖与合规检查</li>
+              <li>建立发布后互动与转化数据回收机制</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 1.5rem;">
+          <h3>下一轮迭代计划</h3>
+          <p>优先验证 5 个视觉方向在小红书场景下的内容表现差异；验证四大卖点在 20 张内容中的覆盖均衡性；在保持 100% 成功率前提下探索缩短总耗时，并补充人工质检与合规审核节点。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 Tech -->
+    <section id="tech">
+      <div class="container">
+        <div class="section-label">06 · 技术实现</div>
+        <h2>技术栈与能力体现</h2>
+        <p class="lead">本项目独立完成需求分析、系统架构、AI 编排、本地 ComfyUI 批量推理与结果结构化输出，体现端到端 AI 应用落地能力。</p>
+        <div class="tech">
+          <span>Python</span>
+          <span>DeepSeek API</span>
+          <span>ComfyUI</span>
+          <span>Stable Diffusion 1.5</span>
+          <span>Tkinter GUI</span>
+          <span>JSON 结构化</span>
+          <span>CSV 生产日志</span>
+          <span>自动化编排</span>
+        </div>
+        <div class="grid-2" style="margin-top: 2rem;">
+          <div class="card">
+            <h3>你解决了什么</h3>
+            <p>将分散的商业内容生产环节整合为可重复、可监控的 AI 工作流，实现从策略到出图的分钟级交付，并保留完整复盘数据。</p>
+          </div>
+          <div class="card">
+            <h3>体现的能力</h3>
+            <p>AI 产品思维 · 系统架构 · API 集成 · 本地推理编排 · 结构化数据设计 · 端到端交付与复盘意识</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p><strong>AI 商业内容自动化生产系统</strong> · Case Study Demo</p>
+      <p style="margin-top: 0.4rem;">本页面仅展示真实生产成果与架构说明，不包含 API Key、源码或本地服务。</p>
+    </div>
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <img src="" alt="预览" id="lightbox-img" />
+  </div>
+
+  <script>
+    const lb = document.getElementById("lightbox");
+    const lbImg = document.getElementById("lightbox-img");
+    document.querySelectorAll("a.lb").forEach(a => {
+      a.addEventListener("click", e => {
+        e.preventDefault();
+        lbImg.src = a.href;
+        lb.classList.add("active");
+      });
+    });
+    lb.addEventListener("click", () => lb.classList.remove("active"));
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") lb.classList.remove("active");
+    });
+  </script>
+</body>
+</html>
